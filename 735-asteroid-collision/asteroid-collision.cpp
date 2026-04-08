@@ -5,14 +5,15 @@ public:
         list<int>st;
         int n=asteroids.size();
         for(int i=0;i<n;i++){
-            if(asteroids[i]>0)st.push_back(asteroids[i]);
+            int temp = asteroids[i];
+            if(temp>0)st.push_back(temp);
             else{
-                while(!st.empty() && st.back()>0 && st.back()<(-1*asteroids[i]))st.pop_back();
-                if(!st.empty() && st.back()>0 && st.back()==(-1*asteroids[i])){
+                while(!st.empty() && st.back()>0 && st.back()<(-1*temp))st.pop_back();
+                if(!st.empty() && st.back()>0 && st.back()==(-1*temp)){
                     st.pop_back();
                 }
-                else if(!st.empty() && st.back()<0 )st.push_back(asteroids[i]);
-                else if(st.empty())st.push_back(asteroids[i]);
+                else if(!st.empty() && st.back()<0 )st.push_back(temp);
+                else if(st.empty())st.push_back(temp);
             }
         }
         
