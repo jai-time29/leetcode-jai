@@ -1,25 +1,27 @@
 class Solution {
 public:
     vector<int> asteroidCollision(vector<int>& asteroids) {
-        vector<int>ans;
-        list<int>st;
-        int n=asteroids.size();
-        for(int i=0;i<n;i++){
-            int temp = asteroids[i];
-            if(temp>0)st.push_back(temp);
-            else{
-                while(!st.empty() && st.back()>0 && st.back()<(-1*temp))st.pop_back();
-                if(!st.empty() && st.back()>0 && st.back()==(-1*temp)){
+        list<int> st;
+
+        for (int x : asteroids) {
+
+            if (x > 0) {
+                st.push_back(x);
+            } 
+            else {
+                while (!st.empty() && st.back() > 0 && st.back() < -x) {
                     st.pop_back();
                 }
-                else if(!st.empty() && st.back()<0 )st.push_back(temp);
-                else if(st.empty())st.push_back(temp);
+
+                if (!st.empty() && st.back() > 0 && st.back() == -x) {
+                    st.pop_back(); // both explode
+                }
+                else if (st.empty() || st.back() < 0) {
+                    st.push_back(x); // ✅ FIXED CONDITION
+                }
             }
         }
-        
-        for(int x : st) {
-        ans.push_back(x);
-        }
-        return ans;
+
+        return vector<int>(st.begin(), st.end());
     }
 };
