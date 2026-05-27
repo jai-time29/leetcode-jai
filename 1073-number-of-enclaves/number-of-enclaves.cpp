@@ -1,64 +1,98 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 class Solution {
 public:
-
-    void dfs(int r, int c,
-             vector<vector<int>>& grid) {
-
-        int m = grid.size();
-        int n = grid[0].size();
-
-        grid[r][c] = 0;
-
-        vector<int> dr = {-1,0,1,0};
-        vector<int> dc = {0,1,0,-1};
-
-        for(int d = 0; d < 4; d++) {
-
-            int nr = r + dr[d];
-            int nc = c + dc[d];
-
-            if(nr >= 0 && nr < m &&
-               nc >= 0 && nc < n &&
-               grid[nr][nc] == 1) {
-
-                dfs(nr, nc, grid);
-            }
-        }
-    }
 
     int numEnclaves(vector<vector<int>>& grid) {
 
         int m = grid.size();
         int n = grid[0].size();
 
-        // Boundary traversal
+        int totalNodes = m * n;
 
-        for(int i = 0; i < m; i++) {
+        int exterior = totalNodes;
 
-            if(grid[i][0] == 1)
-                dfs(i,0,grid);
+        vector<vector<int>> adj(totalNodes + 1);
 
-            if(grid[i][n-1] == 1)
-                dfs(i,n-1,grid);
+        vector<int> dr = {-1, 0, 1, 0};
+        vector<int> dc = {0, 1, 0, -1};
+
+        // Build graph
+        for (int r = 0; r < m; r++) {
+
+            for (int c = 0; c < n; c++) {
+
+                if (grid[r][c] == 0)
+                    continue;
+
+                int node = r * n + c;
+
+                // Boundary land -> exterior
+                if (r == 0 || c == 0 ||
+                    r == m - 1 || c == n - 1) {
+
+                    adj[exterior].push_back(node);
+                    adj[node].push_back(exterior);
+                }
+
+                // Adjacent land connections
+                for (int d = 0; d < 4; d++) {
+
+                    int nr = r + dr[d];
+                    int nc = c + dc[d];
+
+                    if (nr >= 0 && nr < m &&
+                        nc >= 0 && nc < n &&
+                        grid[nr][nc] == 1) {
+
+                        int neigh = nr * n + nc;
+
+                        adj[node].push_back(neigh);
+                    }
+                }
+            }
         }
 
-        for(int j = 0; j < n; j++) {
+        // BFS from exterior
+        vector<int> vis(totalNodes + 1, 0);
 
-            if(grid[0][j] == 1)
-                dfs(0,j,grid);
+        queue<int> q;
 
-            if(grid[m-1][j] == 1)
-                dfs(m-1,j,grid);
+        q.push(exterior);
+
+        vis[exterior] = 1;
+
+        while (!q.empty()) {
+
+            int node = q.front();
+            q.pop();
+
+            for (int neigh : adj[node]) {
+
+                if (!vis[neigh]) {
+
+                    vis[neigh] = 1;
+
+                    q.push(neigh);
+                }
+            }
         }
 
+        // Count unreachable land cells
         int count = 0;
 
-        for(int i = 0; i < m; i++) {
+        for (int r = 0; r < m; r++) {
 
-            for(int j = 0; j < n; j++) {
+            for (int c = 0; c < n; c++) {
 
-                if(grid[i][j] == 1)
-                    count++;
+                if (grid[r][c] == 1) {
+
+                    int node = r * n + c;
+
+                    if (!vis[node])
+                        count++;
+                }
             }
         }
 
