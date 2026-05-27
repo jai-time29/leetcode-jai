@@ -1,16 +1,14 @@
 class Solution {
 public:
 
-    void dfs(int r, int c,
-             vector<vector<int>>& grid) {
+    int m, n;
 
-        int m = grid.size();
-        int n = grid[0].size();
+    int dr[4] = {-1, 0, 1, 0};
+    int dc[4] = {0, 1, 0, -1};
+
+    void dfs(int r, int c, vector<vector<int>>& grid) {
 
         grid[r][c] = 0;
-
-        vector<int> dr = {-1,0,1,0};
-        vector<int> dc = {0,1,0,-1};
 
         for(int d = 0; d < 4; d++) {
 
@@ -28,27 +26,27 @@ public:
 
     int numEnclaves(vector<vector<int>>& grid) {
 
-        int m = grid.size();
-        int n = grid[0].size();
+        m = grid.size();
+        n = grid[0].size();
 
-        // Boundary traversal
-
+        // Left + Right boundary
         for(int i = 0; i < m; i++) {
 
             if(grid[i][0] == 1)
-                dfs(i,0,grid);
+                dfs(i, 0, grid);
 
-            if(grid[i][n-1] == 1)
-                dfs(i,n-1,grid);
+            if(grid[i][n - 1] == 1)
+                dfs(i, n - 1, grid);
         }
 
+        // Top + Bottom boundary
         for(int j = 0; j < n; j++) {
 
             if(grid[0][j] == 1)
-                dfs(0,j,grid);
+                dfs(0, j, grid);
 
-            if(grid[m-1][j] == 1)
-                dfs(m-1,j,grid);
+            if(grid[m - 1][j] == 1)
+                dfs(m - 1, j, grid);
         }
 
         int count = 0;
@@ -57,8 +55,7 @@ public:
 
             for(int j = 0; j < n; j++) {
 
-                if(grid[i][j] == 1)
-                    count++;
+                count += grid[i][j];
             }
         }
 
