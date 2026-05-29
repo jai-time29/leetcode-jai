@@ -1,4 +1,4 @@
-class Solution {
+/* class Solution {
 public:
 
     int m, n;
@@ -44,6 +44,64 @@ public:
 
                     maxi = max(maxi,
                                dfs(i, j, grid));
+                }
+            }
+        }
+
+        return maxi;
+    }
+}; */
+class Solution {
+public:
+
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+
+        int m = grid.size();
+        int n = grid[0].size();
+
+        int dr[4] = {-1, 0, 1, 0};
+        int dc[4] = {0, 1, 0, -1};
+
+        int maxi = 0;
+
+        for(int i = 0; i < m; i++) {
+
+            for(int j = 0; j < n; j++) {
+
+                if(grid[i][j] == 1) {
+
+                    queue<pair<int,int>> q;
+
+                    q.push({i,j});
+
+                    grid[i][j] = 0;
+
+                    int area = 0;
+
+                    while(!q.empty()) {
+
+                        auto [r,c] = q.front();
+                        q.pop();
+
+                        area++;
+
+                        for(int d = 0; d < 4; d++) {
+
+                            int nr = r + dr[d];
+                            int nc = c + dc[d];
+
+                            if(nr >= 0 && nr < m &&
+                               nc >= 0 && nc < n &&
+                               grid[nr][nc] == 1) {
+
+                                grid[nr][nc] = 0;
+
+                                q.push({nr,nc});
+                            }
+                        }
+                    }
+
+                    maxi = max(maxi, area);
                 }
             }
         }
