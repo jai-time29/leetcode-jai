@@ -1,24 +1,3 @@
-/*
-// Definition for a Node.
-class Node {
-public:
-    int val;
-    vector<Node*> neighbors;
-    Node() {
-        val = 0;
-        neighbors = vector<Node*>();
-    }
-    Node(int _val) {
-        val = _val;
-        neighbors = vector<Node*>();
-    }
-    Node(int _val, vector<Node*> _neighbors) {
-        val = _val;
-        neighbors = _neighbors;
-    }
-};
-*/
-
 class Solution {
 public:
 
@@ -26,23 +5,31 @@ public:
 
     Node* cloneGraph(Node* node) {
 
-        if(node == NULL)
-            return NULL;
+        if (!node)
+            return nullptr;
 
-        // Already cloned
-        if(mp.count(node))
-            return mp[node];
+        mp.reserve(101);
 
-        // Create cloned node
+        return dfs(node);
+    }
+
+    Node* dfs(Node* node) {
+
+        auto it = mp.find(node);
+
+        if (it != mp.end())
+            return it->second;
+
         Node* clone = new Node(node->val);
 
         mp[node] = clone;
 
-        // Clone neighbors
-        for(Node* neigh : node->neighbors) {
+        clone->neighbors.reserve(node->neighbors.size());
+
+        for (Node* neigh : node->neighbors) {
 
             clone->neighbors.push_back(
-                cloneGraph(neigh)
+                dfs(neigh)
             );
         }
 
