@@ -1,77 +1,61 @@
 class Solution {
 public:
 
-    long long solve(vector<int>& Astart, vector<int>& Adur,
-                    vector<int>& Bstart, vector<int>& Bdur) {
+    long long getBest(vector<int>& startA, vector<int>& durA,
+                      vector<int>& startB, vector<int>& durB) {
 
-        int m = Bstart.size();
+        int m = startB.size();
 
-        vector<pair<long long,long long>> rides;
-
-        for(int i = 0; i < m; i++) {
-            rides.push_back({Bstart[i], Bdur[i]});
-        }
-
-        sort(rides.begin(), rides.end());
-
-        vector<long long> starts(m);
+        vector<pair<int,int>> b(m);
 
         for(int i = 0; i < m; i++) {
-            starts[i] = rides[i].first;
+            b[i] = {startB[i], durB[i]};
         }
 
-        // pref[i] = minimum duration in [0..i]
-        vector<long long> pref(m);
+        sort(b.begin(), b.end());
 
-        pref[0] = rides[0].second;
+        vector<int> starts(m);
+        vector<long long> pref(m), suff(m);
+
+        for(int i = 0; i < m; i++) {
+            starts[i] = b[i].first;
+        }
+
+        pref[0] = b[0].second;
 
         for(int i = 1; i < m; i++) {
-            pref[i] = min(pref[i - 1], rides[i].second);
+            pref[i] = min(pref[i - 1], (long long)b[i].second);
         }
 
-        // suff[i] = minimum (start + duration) in [i..m-1]
-        vector<long long> suff(m);
-
-        suff[m - 1] = rides[m - 1].first + rides[m - 1].second;
+        suff[m - 1] = (long long)b[m - 1].first + b[m - 1].second;
 
         for(int i = m - 2; i >= 0; i--) {
-
             suff[i] = min(
                 suff[i + 1],
-                rides[i].first + rides[i].second
+                (long long)b[i].first + b[i].second
             );
         }
 
         long long ans = LLONG_MAX;
 
-        for(int i = 0; i < (int)Astart.size(); i++) {
+        for(int i = 0; i < startA.size(); i++) {
 
-            long long finishFirst =
-                (long long)Astart[i] + Adur[i];
+            long long finishA =
+                (long long)startA[i] + durA[i];
 
             int pos = upper_bound(
                 starts.begin(),
                 starts.end(),
-                finishFirst
+                finishA
             ) - starts.begin();
 
-            // start <= finishFirst
-            if(pos > 0) {
+            if(pos)
+                ans = min(ans,
+                          finishA + pref[pos - 1]);
 
-                ans = min(
-                    ans,
-                    finishFirst + pref[pos - 1]
-                );
-            }
-
-            // start > finishFirst
-            if(pos < m) {
-
-                ans = min(
-                    ans,
-                    suff[pos]
-                );
-            }
+            if(pos < m)
+                ans = min(ans,
+                          suff[pos]);
         }
 
         return ans;
@@ -82,22 +66,12 @@ public:
                            vector<int>& waterStartTime,
                            vector<int>& waterDuration) {
 
-        long long ans = LLONG_MAX;
+        return (int)min(
+            getBest(landStartTime, landDuration,
+                    waterStartTime, waterDuration),
 
-        // Land -> Water
-        ans = min(ans,
-                  solve(landStartTime,
-                        landDuration,
-                        waterStartTime,
-                        waterDuration));
-
-        // Water -> Land
-        ans = min(ans,
-                  solve(waterStartTime,
-                        waterDuration,
-                        landStartTime,
-                        landDuration));
-
-        return (int)ans;
+            getBest(waterStartTime, waterDuration,
+                    landStartTime, landDuration)
+        );
     }
 };
