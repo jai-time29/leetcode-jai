@@ -1,25 +1,30 @@
 class Solution {
 public:
-    long long waviness(long long x) {
+    int d[10];
 
-        string s = to_string(x);
+int waviness(int x) {
 
-        if (s.size() < 3)
-            return 0;
+    int len = 0;
 
-        long long cnt = 0;
-
-        for (int i = 1; i < (int)s.size() - 1; i++) {
-
-            if (s[i] > s[i - 1] && s[i] > s[i + 1])
-                cnt++;
-
-            else if (s[i] < s[i - 1] && s[i] < s[i + 1])
-                cnt++;
-        }
-
-        return cnt;
+    while (x) {
+        d[len++] = x % 10;
+        x /= 10;
     }
+
+    if (len < 3)
+        return 0;
+
+    int cnt = 0;
+
+    for (int i = len - 2; i >= 1; i--) {
+
+        if ((d[i] > d[i - 1] && d[i] > d[i + 1]) ||
+            (d[i] < d[i - 1] && d[i] < d[i + 1]))
+            cnt++;
+    }
+
+    return cnt;
+}
 
     long long totalWaviness(int num1, int num2) {
 
@@ -31,4 +36,4 @@ public:
 
         return ans;
     }
-};
+}; 
