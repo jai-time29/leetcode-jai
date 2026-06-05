@@ -3,27 +3,24 @@ public:
     int minMaxDifference(int num) {
         string s = to_string(num);
 
-        string mx = s;
-        char ch = 0;
+        char mxDigit = 0;
+        char mnDigit = s[0];
 
-        for(char c : mx){
-            if(c != '9'){
-                ch = c;
-                break;
-            }
+        // One iteration to find the digits to remap
+        for(char c : s) {
+            if(mxDigit == 0 && c != '9')
+                mxDigit = c;
         }
 
-        if(ch){
-            for(char &c : mx){
-                if(c == ch) c = '9';
-            }
-        }
+        string mx = s, mn = s;
 
-        string mn = s;
-        ch = mn[0];
+        // One iteration to perform both remaps
+        for(int i = 0; i < s.size(); i++) {
+            if(mxDigit && s[i] == mxDigit)
+                mx[i] = '9';
 
-        for(char &c : mn){
-            if(c == ch) c = '0';
+            if(s[i] == mnDigit)
+                mn[i] = '0';
         }
 
         return stoi(mx) - stoi(mn);
