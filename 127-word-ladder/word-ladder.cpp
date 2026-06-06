@@ -1,4 +1,3 @@
-#include<bits/stdc++.h>
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
@@ -17,8 +16,7 @@ public:
                      s[i]=c;
                      if(st.find(s)!=st.end()){
                         st.erase(s);
-                        
-                        q.push({s,steps+1});
+                      q.push({s,steps+1});
                          }
                     s[i]=original;
                 }
