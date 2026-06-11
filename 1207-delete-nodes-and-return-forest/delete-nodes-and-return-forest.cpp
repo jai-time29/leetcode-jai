@@ -14,36 +14,29 @@ public:
     vector<TreeNode*> ans;
     unordered_set<int> del;
 
-    TreeNode* dfs(TreeNode* root) {
+    TreeNode* dfs(TreeNode* root, bool isRoot) {
         if (!root) return nullptr;
 
-        root->left = dfs(root->left);
-        root->right = dfs(root->right);
+        bool deleted = del.count(root->val);
 
-        if (del.count(root->val)) {
+        if (isRoot && !deleted)
+            ans.push_back(root);
 
-            if (root->left)
-                ans.push_back(root->left);
+        root->left = dfs(root->left, deleted);
+        root->right = dfs(root->right, deleted);
 
-            if (root->right)
-                ans.push_back(root->right);
-
-            return nullptr;
-        }
-
-        return root;
+        return deleted ? nullptr : root;
     }
 
     vector<TreeNode*> delNodes(TreeNode* root,
                                vector<int>& to_delete) {
 
-        for (int x : to_delete)
-            del.insert(x);
+        del = unordered_set<int>(
+            to_delete.begin(),
+            to_delete.end()
+        );
 
-        root = dfs(root);
-
-        if (root)
-            ans.push_back(root);
+        dfs(root, true);
 
         return ans;
     }
