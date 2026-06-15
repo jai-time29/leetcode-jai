@@ -44,7 +44,7 @@ public:
             
             int num=stoi(x);
 
-            if(num>255)
+            if(num>255 ||num<0)
                 return false;
         }
 
