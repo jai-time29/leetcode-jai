@@ -26,7 +26,7 @@ public:
 
         for(string &x:parts){
 
-            if(x.empty())
+            if(x.empty() || x.size()>3)
                 return false;
 
 
@@ -41,7 +41,7 @@ public:
             if(x.size()>1 && x[0]=='0')
                 return false;
 
-            if(x.size()>3)return false;
+            
             int num=stoi(x);
 
             if(num>255)
