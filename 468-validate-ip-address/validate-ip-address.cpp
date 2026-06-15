@@ -26,7 +26,7 @@ public:
 
         for(string &x:parts){
 
-            if(x.empty() || x.size()>3)
+            if(x.size()<1 || x.size()>3)
                 return false;
 
 
