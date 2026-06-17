@@ -1,58 +1,49 @@
 class Solution {
 public:
 
-    vector<int> h, v;
-
     int dp[20][20][20][20];
 
+    vector<int> h, v;
 
-    int solve(int sx, int sy, int tx, int ty) {
+    int solve(int r1, int c1, int r2, int c2) {
 
-        // already 1x1
-        if(sx == tx && sy == ty)
-            return 0;
+        int &res = dp[r1][c1][r2][c2];
 
+        if(res != -1)
+            return res;
 
-        int &ans = dp[sx][sy][tx][ty];
-
-        if(ans != -1)
-            return ans;
+        if(r1 == r2 && c1 == c2)
+            return res = 0;
 
 
-        ans = INT_MAX;
+        res = INT_MAX;
 
 
         // horizontal cuts
-        for(int k = sx; k < tx; k++) {
+        for(int r = r1; r < r2; r++) {
 
-            int cost =
-                h[k]
-                +
-                solve(sx, sy, k, ty)
-                +
-                solve(k+1, sy, tx, ty);
-
-
-            ans = min(ans, cost);
+            res = min(
+                res,
+                h[r]
+                + solve(r1,c1,r,c2)
+                + solve(r+1,c1,r2,c2)
+            );
         }
 
 
         // vertical cuts
-        for(int k = sy; k < ty; k++) {
+        for(int c = c1; c < c2; c++) {
 
-            int cost =
-                v[k]
-                +
-                solve(sx, sy, tx, k)
-                +
-                solve(sx, k+1, tx, ty);
-
-
-            ans = min(ans, cost);
+            res = min(
+                res,
+                v[c]
+                + solve(r1,c1,r2,c)
+                + solve(r1,c+1,r2,c2)
+            );
         }
 
 
-        return ans;
+        return res;
     }
 
 
