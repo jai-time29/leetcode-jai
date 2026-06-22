@@ -14,10 +14,10 @@ public:
         reverse(words.begin(), words.end());
 
         string ans;
+        if(words.size()>0)ans+=words[0];
+        for(int i=1;i<words.size();i++){
 
-        for(int i=0;i<words.size();i++){
-
-             if(i)ans += " ";
+            ans += " ";
 
             ans += words[i];
         }
