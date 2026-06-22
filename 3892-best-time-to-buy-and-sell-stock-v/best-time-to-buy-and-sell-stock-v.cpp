@@ -15,12 +15,15 @@ public:
         vector<long long> shortSell(k + 1, NEG);
 
         free[0] = 0;
+        vector<long long> prevFree = free;
+            vector<long long> prevBuy = buy;
+            vector<long long> prevShort = shortSell;
 
         for(int price : prices) {
 
-            vector<long long> prevFree = free;
-            vector<long long> prevBuy = buy;
-            vector<long long> prevShort = shortSell;
+            prevFree = free;
+            prevBuy = buy;
+            prevShort = shortSell;
 
 
             for(int t = 0; t <= k; t++) {
