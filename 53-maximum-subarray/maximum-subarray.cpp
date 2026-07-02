@@ -1,4 +1,4 @@
-/*class Solution {
+class Solution {
 public:
 
     int solve(vector<int>& nums, int l, int r) {
@@ -35,8 +35,8 @@ public:
     int maxSubArray(vector<int>& nums) {
         return solve(nums, 0, nums.size() - 1);
     }
-}; */
-class Solution {
+}; 
+/*class Solution {
 public:
     int maxSubArray(vector<int>& nums) {
 
@@ -51,4 +51,4 @@ public:
 
         return maxSum;
     }
-};
+};*/
