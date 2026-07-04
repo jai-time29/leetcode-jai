@@ -6,7 +6,7 @@ SELECT
         AVG(
             CASE
                 WHEN rating < 3 THEN 1
-                WHEN rating <2 THEN 1
+                WHEN rating <2 AND rating >1 THEN 1
                 ELSE 0
             END
         ) * 100,
