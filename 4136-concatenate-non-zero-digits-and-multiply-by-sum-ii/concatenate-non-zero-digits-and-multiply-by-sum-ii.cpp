@@ -57,8 +57,7 @@ public:
 
             long long x =
                 (prefNum[R + 1] -
-                 prefNum[L] * pow10[len] % MOD +
-                 MOD) % MOD;
+                 prefNum[L] * pow10[len] % MOD+MOD ) % MOD;
 
             ans.push_back((x * sum) % MOD);
         }
