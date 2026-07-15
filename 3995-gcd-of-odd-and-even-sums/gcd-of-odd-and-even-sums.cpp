@@ -1,8 +1,12 @@
 class Solution {
     int gcd(int a,int b){
         if(a<b)return gcd(b,a);
-        if(a%b==0)return b;
-        return gcd(a%b,b);
+        while(b){
+            int t=b;
+            b=a%b;
+            a=t;
+        }
+        return a;
     }
 public:
     int gcdOfOddEvenSums(int n) {
