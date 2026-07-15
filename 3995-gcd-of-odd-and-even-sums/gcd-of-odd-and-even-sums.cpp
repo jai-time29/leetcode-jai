@@ -13,3 +13,4 @@ public:
         return gcd(n*n,n*(n+1));
     }
 };
+//LCM FORMULA IN NOTES
