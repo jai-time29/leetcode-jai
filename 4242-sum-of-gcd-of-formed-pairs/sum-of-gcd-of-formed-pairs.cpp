@@ -11,7 +11,7 @@ public:
         long long ans=0;
         sort(gcdofnum.begin(), gcdofnum.end());
         for(int i=0;i<n/2;i++){
-                 ans+=gcd(gcdofnum[i],gcdofnum[n-i-1]);
+         ans+=gcd(gcdofnum[i],gcdofnum[n-i-1]);
         }
         
         return ans;
