@@ -7,6 +7,7 @@ public:
             for(int j=i;j<n;j++){
                 tempgcd=gcd(tempgcd,nums[j]);
                 if(tempgcd==k)ans++;
+                else if(tempgcd<k)break;
             }
             
         }
