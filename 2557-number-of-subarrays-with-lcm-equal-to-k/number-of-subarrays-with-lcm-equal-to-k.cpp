@@ -20,9 +20,9 @@ class Solution {
 public:
     int subarrayLCM(vector<int>& nums, int k) {
         int n = nums.size(), ans = 0;
-
+long long l=1;
         for (int i = 0; i < n; i++) {
-            long long l = 1;
+            l = 1;
 
             for (int j = i; j < n; j++) {
                 l = (l / gcd(l, 1LL * nums[j])) * nums[j];
