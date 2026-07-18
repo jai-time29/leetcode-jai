@@ -8,6 +8,7 @@ public:
                 tempgcd=gcd(tempgcd,nums[j]);
                 if(tempgcd==k)ans++;
                 else if(tempgcd<k)break;
+                else if(tempgcd%k!=0)break;
             }
             
         }
