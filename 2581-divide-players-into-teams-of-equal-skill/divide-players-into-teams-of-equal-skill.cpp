@@ -11,8 +11,9 @@ public:
         for(int i=0;i<n;i++){
            mp[skill[i]]++;
         }
+        int temp;
         for(int i=0;i<n;i++){
-            int temp=target-skill[i];
+             temp=target-skill[i];
             if(mp.find(temp)!=mp.end()){
                 ans+=(temp)*skill[i];
                 mp[temp]--;
