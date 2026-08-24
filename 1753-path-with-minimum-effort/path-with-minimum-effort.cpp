@@ -81,6 +81,7 @@ public:
         return ans;
     }
 }; */
+//dijktras solution
 class Solution {
 public:
 
@@ -115,8 +116,7 @@ public:
             int c = it.second.second;
 
             // Destination reached
-            if(r == m-1 && c == n-1)
-                return effort;
+            
 
             for(int d = 0; d < 4; d++) {
 
@@ -146,6 +146,6 @@ public:
             }
         }
 
-        return 0;
+        return dist[m-1][n-1];
     }
 };
