@@ -78,6 +78,11 @@ public:
                 int ne = e - 1;
                 int nmask = mask;
 
+
+                 if (classroom[nr][nc] == 'R')
+                    ne = energy;
+
+
                 // Collect litter if this cell contains one
                 for (int i = 0; i < L; i++) {
                     if (litter[i].first == nr &&
@@ -89,8 +94,7 @@ public:
                 }
 
                 // Reset energy
-                if (classroom[nr][nc] == 'R')
-                    ne = energy;
+                
 
                 if (dist[nr][nc][ne][nmask] == -1) {
 
