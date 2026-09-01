@@ -4,46 +4,41 @@ public:
         int m = classroom.size();
         int n = classroom[0].size();
 
-        int sr, sc;
-        vector<pair<int,int>> litter;
+        int sr = 0, sc = 0;
+        int L = 0;
 
-        // Find S and all L
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (classroom[i][j] == 'S') {
-                    sr = i;
-                    sc = j;
+        // litterId[r][c] = litter number at this cell, or -1
+        vector<vector<int>> litterId(m, vector<int>(n, -1));
+
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (classroom[r][c] == 'S') {
+                    sr = r;
+                    sc = c;
                 }
-                if (classroom[i][j] == 'L') {
-                    litter.push_back({i, j});
+                else if (classroom[r][c] == 'L') {
+                    litterId[r][c] = L++;
                 }
             }
         }
 
-        int L = litter.size();
-
-        if (L == 0)
-            return 0;
+        if (L == 0) return 0;
 
         int fullMask = (1 << L) - 1;
 
-        // dist[r][c][energy][mask]
-        // -1 means not visited
-        vector<vector<vector<vector<int>>>> dist(
-            m,
-            vector<vector<vector<int>>>(
-                n,
-                vector<vector<int>>(
-                    energy + 1,
-                    vector<int>(1 << L, -1)
-                )
-            )
-        );
+        // state = (r,c,energy,mask)
+        // Use a flat array instead of 4D vector
+        int states = m * n * (energy + 1) * (1 << L);
 
-        // Queue: r, c, remaining energy, mask
-        queue<array<int,4>> q;
+        vector<int> dist(states, -1);
 
-        dist[sr][sc][energy][0] = 0;
+        auto id = [&](int r, int c, int e, int mask) {
+            return (((r * n + c) * (energy + 1) + e) << L) | mask;
+        };
+
+        queue<array<int, 4>> q;
+
+        dist[id(sr, sc, energy, 0)] = 0;
         q.push({sr, sc, energy, 0});
 
         int dr[] = {1, -1, 0, 0};
@@ -54,10 +49,14 @@ public:
             auto [r, c, e, mask] = q.front();
             q.pop();
 
-            int moves = dist[r][c][e][mask];
+            int curDist = dist[id(r, c, e, mask)];
 
             if (mask == fullMask)
-                return moves;
+                return curDist;
+
+            // If energy is 0, cannot make another move
+            if (e == 0)
+                continue;
 
             for (int d = 0; d < 4; d++) {
 
@@ -71,35 +70,23 @@ public:
                 if (classroom[nr][nc] == 'X')
                     continue;
 
-                // Need 1 energy to make the move
-                if (e == 0)
-                    continue;
-
                 int ne = e - 1;
                 int nmask = mask;
 
-
-                 if (classroom[nr][nc] == 'R')
-                    ne = energy;
-
-
-                // Collect litter if this cell contains one
-                for (int i = 0; i < L; i++) {
-                    if (litter[i].first == nr &&
-                        litter[i].second == nc) {
-
-                        nmask |= (1 << i);
-                        break;
-                    }
+                // O(1) litter check
+                if (litterId[nr][nc] != -1) {
+                    nmask |= (1 << litterId[nr][nc]);
                 }
 
                 // Reset energy
-                
+                if (classroom[nr][nc] == 'R') {
+                    ne = energy;
+                }
 
-                if (dist[nr][nc][ne][nmask] == -1) {
+                int nextId = id(nr, nc, ne, nmask);
 
-                    dist[nr][nc][ne][nmask] = moves + 1;
-
+                if (dist[nextId] == -1) {
+                    dist[nextId] = curDist + 1;
                     q.push({nr, nc, ne, nmask});
                 }
             }
