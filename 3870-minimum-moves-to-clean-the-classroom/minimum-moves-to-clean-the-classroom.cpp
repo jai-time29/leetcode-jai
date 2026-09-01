@@ -4,92 +4,90 @@ public:
         int m = classroom.size();
         int n = classroom[0].size();
 
-        int sr = 0, sc = 0;
+        int sx, sy;
         int L = 0;
 
-        // litterId[r][c] = litter number at this cell, or -1
-        vector<vector<int>> litterId(m, vector<int>(n, -1));
+        vector<vector<int>> id(m, vector<int>(n, -1));
 
-        for (int r = 0; r < m; r++) {
-            for (int c = 0; c < n; c++) {
-                if (classroom[r][c] == 'S') {
-                    sr = r;
-                    sc = c;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (classroom[i][j] == 'S') {
+                    sx = i;
+                    sy = j;
                 }
-                else if (classroom[r][c] == 'L') {
-                    litterId[r][c] = L++;
+                else if (classroom[i][j] == 'L') {
+                    id[i][j] = L++;
                 }
             }
         }
 
-        if (L == 0) return 0;
-
         int fullMask = (1 << L) - 1;
 
-        // state = (r,c,energy,mask)
-        // Use a flat array instead of 4D vector
-        int states = m * n * (energy + 1) * (1 << L);
+        // bestEnergy[x][y][mask]
+        vector<vector<vector<int>>> best(
+            m, vector<vector<int>>(
+                n, vector<int>(1 << L, -1)
+            )
+        );
 
-        vector<int> dist(states, -1);
-
-        auto id = [&](int r, int c, int e, int mask) {
-            return (((r * n + c) * (energy + 1) + e) << L) | mask;
-        };
-
+        // x, y, mask, energy
         queue<array<int, 4>> q;
 
-        dist[id(sr, sc, energy, 0)] = 0;
-        q.push({sr, sc, energy, 0});
+        best[sx][sy][0] = energy;
+        q.push({sx, sy, 0, energy});
 
         int dr[] = {1, -1, 0, 0};
         int dc[] = {0, 0, 1, -1};
 
+        int steps = 0;
+
         while (!q.empty()) {
 
-            auto [r, c, e, mask] = q.front();
-            q.pop();
+            int sz = q.size();
 
-            int curDist = dist[id(r, c, e, mask)];
+            while (sz--) {
 
-            if (mask == fullMask)
-                return curDist;
+                auto [x, y, mask, e] = q.front();
+                q.pop();
 
-            // If energy is 0, cannot make another move
-            if (e == 0)
-                continue;
+                if (mask == fullMask)
+                    return steps;
 
-            for (int d = 0; d < 4; d++) {
-
-                int nr = r + dr[d];
-                int nc = c + dc[d];
-
-                if (nr < 0 || nr >= m ||
-                    nc < 0 || nc >= n)
+                if (e == 0)
                     continue;
 
-                if (classroom[nr][nc] == 'X')
-                    continue;
+                for (int d = 0; d < 4; d++) {
 
-                int ne = e - 1;
-                int nmask = mask;
+                    int nx = x + dr[d];
+                    int ny = y + dc[d];
 
-                // O(1) litter check
-                if (litterId[nr][nc] != -1) {
-                    nmask |= (1 << litterId[nr][nc]);
-                }
+                    if (nx < 0 || nx >= m ||
+                        ny < 0 || ny >= n ||
+                        classroom[nx][ny] == 'X')
+                        continue;
 
-                // Reset energy
-                if (classroom[nr][nc] == 'R') {
-                    ne = energy;
-                }
+                    int ne = e - 1;
+                    int nmask = mask;
 
-                int nextId = id(nr, nc, ne, nmask);
+                    // Collect litter
+                    if (id[nx][ny] != -1)
+                        nmask |= (1 << id[nx][ny]);
 
-                if (dist[nextId] == -1) {
-                    dist[nextId] = curDist + 1;
-                    q.push({nr, nc, ne, nmask});
+                    // Reset
+                    if (classroom[nx][ny] == 'R')
+                        ne = energy;
+
+                    // Dominance pruning
+                    if (ne <= best[nx][ny][nmask])
+                        continue;
+
+                    best[nx][ny][nmask] = ne;
+
+                    q.push({nx, ny, nmask, ne});
                 }
             }
+
+            steps++;
         }
 
         return -1;
