@@ -30,6 +30,6 @@ public:
                 return false;
         }
 
-        return low == 0 || right==0;
+        return low == 0 || high==0;
     }
 };
