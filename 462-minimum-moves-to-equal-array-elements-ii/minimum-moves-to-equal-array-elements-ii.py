@@ -27,8 +27,8 @@ class Solution:
         nums.sort()
 
         n=len(nums)
-        #mid=nums[int(n/2)]
-        mid = median(nums)
+        mid=nums[int(n/2)]
+        #mid = median(nums)
         ans=0
         for num in nums:
             ans+=abs(num-mid)
