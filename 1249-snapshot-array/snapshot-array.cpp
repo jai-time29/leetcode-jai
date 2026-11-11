@@ -31,7 +31,7 @@ public:
         [](int target_snap,const pair<int,int>&entry){
             return target_snap < entry.first;
         });
-        return std::prev(it)->second;
+        return prev(it)->second;
     }
 };
 
